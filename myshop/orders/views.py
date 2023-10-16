@@ -1,8 +1,9 @@
-from django.shortcuts import render
-from .models import OrderItem
+from django.shortcuts import render, get_object_or_404
+from .models import OrderItem, Order
 from .forms import OrderCreateForm
 from card.card import Card
 from .tasks import order_created
+from django.contrib.admin.views.decorators import staff_member_required
 
 # Create your views here.
 
@@ -30,3 +31,11 @@ def order_create(request):
     return render(request,
                   'orders/order/create.html',
                   {'card': card, 'form': form})
+
+
+@staff_member_required
+def admin_order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request,
+                  'admin/orders/order/detail.html',
+                  {'order': order})
